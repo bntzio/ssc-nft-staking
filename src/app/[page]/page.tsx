@@ -1,11 +1,32 @@
+import Link from 'next/link'
 import Image from 'next/image'
 import BigNumber from 'bignumber.js'
 import { Connection } from '@solana/web3.js'
 import { getStakedDataByMint } from '@genesysgo/ssc-staking-sdk'
 
-export default async function Home() {
-  const connection = new Connection(`https://mainnet.helius-rpc.com/?api-key=${process.env.HELIUS_API_KEY ?? ''}`, 'confirmed');
+async function fetchStakeData(mints: number[]) {
+  const connection = new Connection(`https://mainnet.helius-rpc.com/?api-key=${process.env.HELIUS_API_KEY ?? ''}`, 'confirmed')
 
+  const items = []
+
+  for (const mint of mints) {
+    const stakeData = await getStakedDataByMint(connection, mint)
+
+    for (const stake of stakeData) {
+      items.push({
+        name: stake.json.name,
+        image: stake.json.image,
+        withdrawn: new BigNumber(stake.withdrawn).dividedBy(1000000000).toFixed(0).toLocaleString(),
+        harvested: new BigNumber(stake.harvested).dividedBy(1000000000).toFixed(0).toLocaleString(),
+        bonus_redeemed: stake.bonus_redeemed,
+      })
+    }
+  }
+
+  return items
+}
+
+export default async function Page({ params }: { params: { page: string } }) {
   const res = await fetch('https://api.tensor.so/graphql', {
     method: 'POST',
     headers: {
@@ -32,29 +53,18 @@ export default async function Home() {
         slug: 'shadowy_super_coder_dao'
       },
     }),
+    next: { revalidate: 360 },
   })
 
   const data = await res.json()
 
   const listingsMints = data.data.activeListingsV2.txs.map((tx: any) => tx.mint.onchainId)
 
-  const first12Mints = listingsMints.slice(0, 12);
+  const currentPage = parseInt(params.page)
 
-  const items = []
+  const nextMints = listingsMints.slice((currentPage - 1) * 12, (currentPage - 1) * 12 + 12)
 
-  for (const mint of first12Mints) {
-    const stakeData = await getStakedDataByMint(connection, mint);
-
-    for (const stake of stakeData) {
-      items.push({
-        name: stake.json.name,
-        image: stake.json.image,
-        withdrawn: new BigNumber(stake.withdrawn).dividedBy(1000000000).toFixed(0).toLocaleString(),
-        harvested: new BigNumber(stake.harvested).dividedBy(1000000000).toFixed(0).toLocaleString(),
-        bonus_redeemed: stake.bonus_redeemed,
-      });
-    }
-  }
+  const items = await fetchStakeData(nextMints)
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
@@ -73,6 +83,9 @@ export default async function Home() {
             <div className="text-lg">Bonus Redeemed: {item.bonus_redeemed ? 'YES' : 'NO'}</div>
           </div>
         ))}
+        <Link href={`/${currentPage + 1}`}>
+          <button>Next</button>
+        </Link>
       </div>
     </main>
   )
