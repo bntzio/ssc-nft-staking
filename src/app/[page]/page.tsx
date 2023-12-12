@@ -5,7 +5,8 @@ import { Connection } from '@solana/web3.js'
 import { getStakedDataByMint } from '@genesysgo/ssc-staking-sdk'
 
 async function fetchStakeData(mints: number[]) {
-  const connection = new Connection(`https://mainnet.helius-rpc.com/?api-key=${process.env.HELIUS_API_KEY ?? ''}`, 'confirmed')
+  // const connection = new Connection(`https://mainnet.helius-rpc.com/?api-key=${process.env.HELIUS_API_KEY ?? ''}`, 'confirmed')
+  const connection = new Connection(`https://aloise-03hryw-fast-mainnet.helius-rpc.com`, 'confirmed')
 
   const items = []
 
