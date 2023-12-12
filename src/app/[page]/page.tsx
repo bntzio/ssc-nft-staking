@@ -39,11 +39,7 @@ export default async function Page({ params }: { params: { page: string } }) {
           activeListingsV2(slug: $slug, sortBy: PriceAsc) {
             txs {
               mint {
-                name
                 onchainId
-              }
-              tx {
-                source
               }
             }
           }
