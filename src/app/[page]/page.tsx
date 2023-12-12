@@ -72,6 +72,7 @@ export default async function Page({ params }: { params: { page: string } }) {
               alt={item.name}
               width={100}
               height={100}
+              unoptimized
             />
             <div className="text-xl font-bold">{item.name}</div>
             <div className="text-lg">Withdrawn: {item.withdrawn}</div>
