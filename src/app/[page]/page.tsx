@@ -83,9 +83,10 @@ export default async function Page({ params }: { params: { page: string } }) {
             <div className="text-lg">Bonus Redeemed: {item.bonus_redeemed ? 'YES' : 'NO'}</div>
           </div>
         ))}
-        <Link href={`/${currentPage + 1}`}>
-          <button>Next</button>
-        </Link>
+      </div>
+      <div className="flex justify-center items-center space-x-12 mt-16">
+        {currentPage > 1 && <Link href={`/${currentPage - 1}`}>Previous</Link>}
+        <Link href={`/${currentPage + 1}`}>Next</Link>
       </div>
     </main>
   )
