@@ -103,9 +103,11 @@ export default async function Page({ params }: { params: { page: string } }) {
               unoptimized
             />
             <div className="text-xl font-bold text-center">{item.name}</div>
-            <div className="text-lg">Withdrawn: {item.withdrawn}</div>
-            <div className="text-lg">Harvested: {item.harvested}</div>
-            <div className="text-lg">Bonus Redeemed: {item.bonus_redeemed ? 'YES' : 'NO'}</div>
+            <div className="flex flex-col items-center space-y-1">
+              <div className="">Withdrawn: <b>{item.withdrawn} SHDW</b></div>
+              <div className="">Harvested: <b>{item.harvested} SHDW</b></div>
+              <div className="">Bonus Redeemed: {item.bonus_redeemed ? <span role="img" aria-label="check emoji">✅</span> : <span role="img" aria-label="x emoji">❌</span>}</div>
+            </div>
             <a href={`https://www.tensor.trade/item/${item.id}`} target="_blank">
               <button className="border-2 border-dashed border-fuchsia-500 hover:bg-fuchsia-500 text-lg text-white font-semibold px-4 py-2">Buy for ◎{pricesMap[item.id][0] / LAMPORTS_PER_SOL}</button>
             </a>
