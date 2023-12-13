@@ -18,7 +18,7 @@ async function fetchStakeData(mints: number[]) {
         id: mint,
         name: stake.json.name,
         image: stake.json.image,
-        withdrawn: new BigNumber(stake.withdrawn).dividedBy(1000000000).toFixed(0).toLocaleString(),
+        // withdrawn: new BigNumber(stake.withdrawn).dividedBy(1000000000).toFixed(0).toLocaleString(),
         harvested: new BigNumber(stake.harvested).dividedBy(1000000000).toFixed(0).toLocaleString(),
         bonus_redeemed: stake.bonus_redeemed,
       })
@@ -104,7 +104,7 @@ export default async function Page({ params }: { params: { page: string } }) {
             />
             <div className="text-xl font-bold text-center">{item.name}</div>
             <div className="flex flex-col items-center space-y-1">
-              <div className="">Withdrawn: <b>{item.withdrawn} SHDW</b></div>
+              {/* <div className="">Withdrawn: <b>{item.withdrawn} SHDW</b></div> */}
               <div className="">Harvested: <b>{item.harvested} SHDW</b></div>
               <div className="">Bonus Redeemed: {item.bonus_redeemed ? <span role="img" aria-label="check emoji">✅</span> : <span role="img" aria-label="x emoji">❌</span>}</div>
             </div>
