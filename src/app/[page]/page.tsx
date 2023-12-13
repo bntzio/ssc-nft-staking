@@ -65,6 +65,18 @@ export default async function Page({ params }: { params: { page: string } }) {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
+      <div className="space-y-4 mb-20">
+        <h1 className="text-3xl font-bold text-center">Shadowy Super Coders NFT Staking</h1>
+        <div className="flex flex-col items-center space-y-2">
+          <p>This site shows the $SHDW emissions for the Shadowy Super Coders NFTs.</p>
+          <p>All NFTs listed below are available for sale in Tensor <span role="img" aria-label="atom emoji">⚛️</span></p>
+        </div>
+        <div className="flex flex-col items-center space-y-2">
+          <p>Feeling generous? Donate some ◎SOL to the following address:</p>
+          <p className="text-fuchsia-500"><b>8mhAeLpNV7QJEZKjpppp3Sv9xh2W6EikCBswgugZJrcS</b></p>
+          <p>Made by <b><a href="https://x.com/0xPegasus" target="_blank" className="text-blue-500">@0xPegasus</a></b></p>
+        </div>
+      </div>
       <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
         {items.map((item, idx) => (
           <div className="flex flex-col items-center justify-center p-4 space-y-4 bg-black rounded-lg shadow-lg" key={idx}>
