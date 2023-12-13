@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import BigNumber from 'bignumber.js'
-import { Connection } from '@solana/web3.js'
+import { Connection, LAMPORTS_PER_SOL } from '@solana/web3.js'
 import { getStakedDataByMint } from '@genesysgo/ssc-staking-sdk'
 
 async function fetchStakeData(mints: number[]) {
@@ -43,6 +43,9 @@ export default async function Page({ params }: { params: { page: string } }) {
               mint {
                 onchainId
               }
+              tx {
+                grossAmount
+              }
             }
           }
         }
@@ -64,6 +67,17 @@ export default async function Page({ params }: { params: { page: string } }) {
 
   const items = await fetchStakeData(nextMints)
 
+  const pricesMap = data.data.activeListingsV2.txs.reduce((acc: any, tx: any) => {
+    if (!acc[tx.mint.onchainId]) {
+      acc[tx.mint.onchainId] = []
+    }
+
+    acc[tx.mint.onchainId].push(tx.tx.grossAmount)
+
+    return acc
+  }
+  , {})
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div className="space-y-4 mb-20">
@@ -80,21 +94,22 @@ export default async function Page({ params }: { params: { page: string } }) {
       </div>
       <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left gap-2">
         {items.map((item, idx) => (
-          <a href={`https://www.tensor.trade/item/${item.id}`} target="_blank" key={idx}>
-            <div className="flex flex-col items-center justify-center p-4 space-y-4 bg-black rounded-lg shadow-lg border-slate-800 border hover:bg-fuchsia-500">
-              <Image
-                src={item.image}
-                alt={item.name}
-                width={100}
-                height={100}
-                unoptimized
-              />
-              <div className="text-xl font-bold text-center">{item.name}</div>
-              <div className="text-lg">Withdrawn: {item.withdrawn}</div>
-              <div className="text-lg">Harvested: {item.harvested}</div>
-              <div className="text-lg">Bonus Redeemed: {item.bonus_redeemed ? 'YES' : 'NO'}</div>
-            </div>
-          </a>
+          <div className="flex flex-col items-center justify-center p-4 space-y-4 bg-black rounded-lg shadow-lg border-slate-800 border" key={idx}>
+            <Image
+              src={item.image}
+              alt={item.name}
+              width={100}
+              height={100}
+              unoptimized
+            />
+            <div className="text-xl font-bold text-center">{item.name}</div>
+            <div className="text-lg">Withdrawn: {item.withdrawn}</div>
+            <div className="text-lg">Harvested: {item.harvested}</div>
+            <div className="text-lg">Bonus Redeemed: {item.bonus_redeemed ? 'YES' : 'NO'}</div>
+            <a href={`https://www.tensor.trade/item/${item.id}`} target="_blank">
+              <button className="border-2 border-dashed border-fuchsia-500 hover:bg-fuchsia-500 text-lg text-white font-semibold px-4 py-2">Buy for ◎{pricesMap[item.id][0] / LAMPORTS_PER_SOL}</button>
+            </a>
+          </div>
         ))}
       </div>
       <div className="flex justify-center items-center space-x-12 mt-16">
